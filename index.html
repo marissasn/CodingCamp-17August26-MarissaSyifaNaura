@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expense &amp; Budget Visualizer</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  </head>
+  <body data-theme="light">
+
+    <!-- ── Header ─────────────────────────────────────────── -->
+    <header class="site-header">
+      <h1 class="site-title">Expense &amp; Budget Visualizer</h1>
+      <button id="theme-btn" class="theme-btn" aria-label="Toggle dark / light mode" title="Toggle theme">
+        <span id="theme-icon">🌙</span>
+      </button>
+    </header>
+
+    <main class="container">
+
+      <!-- ── Balance ───────────────────────────────────────── -->
+      <section class="balance-card">
+        <p class="balance-label">TOTAL BALANCE</p>
+        <p class="balance-amount" id="total-balance">Rp 0</p>
+        <div class="balance-sub">
+          <div class="balance-sub-item income">
+            <span class="sub-label">Income</span>
+            <span class="sub-value" id="total-income">Rp 0</span>
+          </div>
+          <div class="balance-sub-divider"></div>
+          <div class="balance-sub-item expense">
+            <span class="sub-label">Expenses</span>
+            <span class="sub-value" id="total-expense">Rp 0</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Spending Limit Warning ────────────────────────── -->
+      <div id="limit-banner" class="limit-banner hidden" role="alert">
+        ⚠️ You have exceeded your monthly spending limit!
+      </div>
+
+      <!-- ── Add Transaction ───────────────────────────────── -->
+      <section class="card">
+        <h2 class="card-title">Add Transaction</h2>
+        <form id="txn-form" novalidate>
+
+          <!-- Item Name -->
+          <div class="field">
+            <label for="f-name">Item Name</label>
+            <input id="f-name" type="text" placeholder="e.g. Lunch, Bus fare…" maxlength="60" autocomplete="off" />
+            <span class="field-err" id="err-name"></span>
+          </div>
+
+          <!-- Amount + Type -->
+          <div class="field-row">
+            <div class="field">
+              <label for="f-amount">Amount (Rp)</label>
+              <input id="f-amount" type="number" placeholder="0" min="1" />
+              <span class="field-err" id="err-amount"></span>
+            </div>
+            <div class="field">
+              <label for="f-type">Type</label>
+              <select id="f-type">
+                <option value="expense">Expense (−)</option>
+                <option value="income">Income (+)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Category + Custom -->
+          <div class="field-row">
+            <div class="field">
+              <label for="f-category">Category</label>
+              <select id="f-category">
+                <option value="Food">🍔 Food</option>
+                <option value="Transport">🚌 Transport</option>
+                <option value="Fun">🎮 Fun</option>
+              </select>
+              <span class="field-err" id="err-category"></span>
+            </div>
+            <div class="field">
+              <label for="f-custom">Add Custom Category</label>
+              <div class="inline-row">
+                <input id="f-custom" type="text" placeholder="New category…" maxlength="30" />
+                <button type="button" id="add-cat-btn" class="btn-outline">Add</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Spending Limit -->
+          <details class="limit-details">
+            <summary>Set Monthly Spending Limit</summary>
+            <div class="field-row mt-sm">
+              <div class="field">
+                <label for="f-limit">Limit (Rp)</label>
+                <input id="f-limit" type="number" placeholder="e.g. 500000" min="0" />
+              </div>
+              <div class="field field-end">
+                <button type="button" id="save-limit-btn" class="btn-outline">Save</button>
+              </div>
+            </div>
+          </details>
+
+          <button type="submit" class="btn-primary">Add Transaction</button>
+        </form>
+      </section>
+
+      <!-- ── Transactions + Chart (side-by-side on wide screens) -->
+      <div class="split-row">
+
+        <!-- Transaction List -->
+        <section class="card split-left">
+          <div class="list-header">
+            <h2 class="card-title">Transactions</h2>
+            <select id="sort-select" class="sort-select" title="Sort transactions">
+              <option value="date-desc">Latest first</option>
+              <option value="date-asc">Oldest first</option>
+              <option value="amount-desc">Amount ↓</option>
+              <option value="amount-asc">Amount ↑</option>
+              <option value="category">By Category</option>
+            </select>
+          </div>
+          <ul id="txn-list" class="txn-list" aria-live="polite"></ul>
+          <p id="txn-empty" class="empty-msg">No transactions yet. Add one above!</p>
+        </section>
+
+        <!-- Chart -->
+        <section class="card split-right">
+          <h2 class="card-title">Spending by Category</h2>
+          <div class="chart-box">
+            <canvas id="pie-chart" role="img" aria-label="Spending breakdown pie chart"></canvas>
+          </div>
+          <p id="chart-empty" class="empty-msg">Add expense transactions to see the chart.</p>
+        </section>
+
+      </div>
+
+      <!-- ── Monthly Summary ───────────────────────────────── -->
+      <section class="card">
+        <h2 class="card-title">Monthly Summary</h2>
+        <div id="monthly-summary" class="monthly-summary"></div>
+        <p id="monthly-empty" class="empty-msg">No data yet.</p>
+      </section>
+
+    </main>
+
+    <footer class="site-footer">
+      Budget Tracker &copy; 2026 &mdash; all data stored locally in your browser.
+    </footer>
+
+    <script src="js/app.js"></script>
+  </body>
+</html>
